@@ -1,18 +1,69 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DataManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static DataManager Instance;
+    public string CurrentPlayerName;
+    public string HighPlayerName;
+    public int HighPlayerScore;
+
+    [Serializable]
+    class SaveData
     {
-        
+        public string HighPlayerName;
+        public int HighPlayerScore;
     }
 
-    // Update is called once per frame
-    void Update()
+    // Start is called before the first frame update
+    void Awake()
     {
-        
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        LoadScore();
+    }
+
+
+    public void SaveScore()
+    {
+        SaveData data = new SaveData();
+        string json;
+
+        data.HighPlayerName = HighPlayerName;
+        data.HighPlayerScore = HighPlayerScore;
+
+        json = JsonUtility.ToJson(data);
+        File.WriteAllText(Application.persistentDataPath + "savefile.json", json);
+    }
+
+
+    public void LoadScore()
+    {
+        string path = Application.persistentDataPath + "savefile.json";
+
+        if(File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            Instance.HighPlayerName = data.HighPlayerName;
+            Instance.HighPlayerScore = data.HighPlayerScore;
+        }
+        else
+        {
+            Instance.HighPlayerName = "Unknown";
+            Instance.HighPlayerScore = 0;
+        }
     }
 }

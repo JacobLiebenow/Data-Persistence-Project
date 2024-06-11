@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -9,15 +10,28 @@ using UnityEditor;
 
 public class UIMainMenu : MonoBehaviour
 {
+    [SerializeField] TextMeshProUGUI nameInputText;
+    [SerializeField] TextMeshProUGUI highScoreText;
+    private string defaultText = "Unknown";
+    private string highScoreDescriptionText = "High Score: ";
+    private string highScoreSeparatorText = " by ";
 
     // Start is called before the first frame update
     void Start()
     {
-        // TODO: Initialize text boxes with saved data here
+        UpdateHighScoreText();
     }
 
     public void StartButtonPressed()
     {
+        if (nameInputText != null)
+        {
+            DataManager.Instance.CurrentPlayerName = nameInputText.text;
+        } else
+        {
+            DataManager.Instance.CurrentPlayerName = defaultText;
+        }
+
         SceneManager.LoadScene(1);
     }
 
@@ -28,5 +42,10 @@ public class UIMainMenu : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    public void UpdateHighScoreText()
+    {
+        highScoreText.text = highScoreDescriptionText + DataManager.Instance.HighPlayerScore + highScoreSeparatorText + DataManager.Instance.HighPlayerName;
     }
 }

@@ -12,6 +12,8 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
+
+    [SerializeField] private UIGame gameUI;
     
     private bool m_Started = false;
     private int m_Points;
@@ -66,11 +68,27 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+        
+        // If the player manages to get a higher score than the previous high score, update the high score accordingly
+        if(DataManager.Instance != null && m_Points > DataManager.Instance.HighPlayerScore)
+        {
+            DataManager.Instance.HighPlayerScore = m_Points;
+
+            if(DataManager.Instance.HighPlayerName != DataManager.Instance.CurrentPlayerName)
+            {
+                DataManager.Instance. HighPlayerName = DataManager.Instance.CurrentPlayerName;
+            }
+
+            gameUI.UpdateHighScoreText();
+        }
+
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+
+        DataManager.Instance.SaveScore();
     }
 }
