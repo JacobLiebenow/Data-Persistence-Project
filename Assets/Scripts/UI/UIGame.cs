@@ -34,6 +34,7 @@ public class UIGame : MonoBehaviour
         SetPauseUIInactive();
     }
 
+    // Handle pause screen
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && !isGamePaused)
@@ -61,12 +62,13 @@ public class UIGame : MonoBehaviour
     }
 
 
-
+    // Handle pause screen resume button functionality
     public void ResumeButtonPressed()
     {
         GameResumed();
     }
 
+    // Handle pause screen main menu button functionality
     public void MainMenuButtonPressed()
     {
         if(DataManager.Instance != null)
@@ -78,6 +80,8 @@ public class UIGame : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+
+    // Handle pause functions
     private void GamePaused()
     {
         isGamePaused = true;
@@ -91,6 +95,7 @@ public class UIGame : MonoBehaviour
         Time.timeScale = 1f;
         SetPauseUIInactive();
     }
+
 
     // Functions for setting broader UI screens active or inactive
     public void SetGameUIACtive()
