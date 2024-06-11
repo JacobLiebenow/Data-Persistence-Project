@@ -12,6 +12,7 @@ public class DataManager : MonoBehaviour
     public string HighPlayerName;
     public int HighPlayerScore;
 
+    // Data to save for later use between sessions
     [Serializable]
     class SaveData
     {
@@ -34,7 +35,7 @@ public class DataManager : MonoBehaviour
         LoadScore();
     }
 
-
+    // Update the save file to reflect the high score
     public void SaveScore()
     {
         SaveData data = new SaveData();
@@ -47,7 +48,7 @@ public class DataManager : MonoBehaviour
         File.WriteAllText(Application.persistentDataPath + "savefile.json", json);
     }
 
-
+    // Load from the save file should it exist.  Otherwise, set default values for DataManager
     public void LoadScore()
     {
         string path = Application.persistentDataPath + "savefile.json";

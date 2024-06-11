@@ -74,9 +74,9 @@ public class MainManager : MonoBehaviour
         {
             DataManager.Instance.HighPlayerScore = m_Points;
 
-            if(DataManager.Instance.HighPlayerName != DataManager.Instance.CurrentPlayerName)
+            if(!DataManager.Instance.HighPlayerName.Equals(DataManager.Instance.CurrentPlayerName))
             {
-                DataManager.Instance. HighPlayerName = DataManager.Instance.CurrentPlayerName;
+                DataManager.Instance.HighPlayerName = DataManager.Instance.CurrentPlayerName;
             }
 
             gameUI.UpdateHighScoreText();
@@ -89,6 +89,9 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
 
-        DataManager.Instance.SaveScore();
+        if(DataManager.Instance != null)
+        {
+            DataManager.Instance.SaveScore();
+        }
     }
 }

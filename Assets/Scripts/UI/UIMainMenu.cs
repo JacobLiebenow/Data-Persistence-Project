@@ -10,11 +10,12 @@ using UnityEditor;
 
 public class UIMainMenu : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI nameInputText;
-    [SerializeField] TextMeshProUGUI highScoreText;
-    private string defaultText = "Unknown";
+    [SerializeField] private TMP_InputField nameTextInput;
+    [SerializeField] private TextMeshProUGUI highScoreText;
+
     private string highScoreDescriptionText = "High Score: ";
     private string highScoreSeparatorText = " by ";
+    private string defaultText = "Unknown";
 
     // Start is called before the first frame update
     void Start()
@@ -22,12 +23,14 @@ public class UIMainMenu : MonoBehaviour
         UpdateHighScoreText();
     }
 
+    // Enter the main game
     public void StartButtonPressed()
     {
-        if (nameInputText != null)
+        if (nameTextInput.text != null && !nameTextInput.text.Equals(""))
         {
-            DataManager.Instance.CurrentPlayerName = nameInputText.text;
-        } else
+            DataManager.Instance.CurrentPlayerName = nameTextInput.text;
+        } 
+        else
         {
             DataManager.Instance.CurrentPlayerName = defaultText;
         }
@@ -35,6 +38,7 @@ public class UIMainMenu : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
+    // Exit play mode/the application
     public void ExitButtonPressed()
     {
 #if UNITY_EDITOR
@@ -44,6 +48,21 @@ public class UIMainMenu : MonoBehaviour
 #endif
     }
 
+    // Reset the high score data file back to its original state
+    public void ResetScoreButtonPressed()
+    {
+        // To keep file calls to a minimum, only implement this method if the data values aren't at their default states to begin with
+        if (DataManager.Instance.HighPlayerScore != 0)
+        {
+            DataManager.Instance.HighPlayerName = defaultText;
+            DataManager.Instance.HighPlayerScore = 0;
+
+            DataManager.Instance.SaveScore();
+            UpdateHighScoreText();
+        }
+    }
+
+    // Update the high score text on the main menu
     public void UpdateHighScoreText()
     {
         highScoreText.text = highScoreDescriptionText + DataManager.Instance.HighPlayerScore + highScoreSeparatorText + DataManager.Instance.HighPlayerName;
