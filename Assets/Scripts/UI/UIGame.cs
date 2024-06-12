@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Diagnostics.Eventing.Reader;
+using UnityEngine.UI;
 
 public class UIGame : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class UIGame : MonoBehaviour
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private List<TextMeshProUGUI> highScorePauseScreenTexts;
     [SerializeField] private TextMeshProUGUI highScoreText;
+    [SerializeField] private Text scoreText;
 
     private string highScoreDescriptionText = "High Score: ";
     private string highScoreSeparatorText = " by ";
@@ -24,6 +26,7 @@ public class UIGame : MonoBehaviour
 
         if(DataManager.Instance != null)
         {
+            scoreText.text = DataManager.Instance.CurrentPlayerName + "'s score: 0";
             UpdateHighScoreText();
         }
         else

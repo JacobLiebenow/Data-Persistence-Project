@@ -70,7 +70,7 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = DataManager.Instance.CurrentPlayerName + $"'s Score : {m_Points}";
         
         // If the player manages to get a higher score than the previous high score, update the high score accordingly
         if(DataManager.Instance != null && m_Points > DataManager.Instance.HighPlayerScore[DataManager.Instance.HighPlayerScore.Count - 1])
