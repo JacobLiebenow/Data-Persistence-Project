@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Diagnostics.Eventing.Reader;
 
 public class UIGame : MonoBehaviour
 {
@@ -47,18 +48,54 @@ public class UIGame : MonoBehaviour
         }
     }
 
+
     // Update the high score text at the top of the game screen
     public void UpdateHighScoreText()
     {
         if (DataManager.Instance != null)
         {
-            highScoreText.text = highScoreDescriptionText + DataManager.Instance.HighPlayerScore + highScoreSeparatorText + DataManager.Instance.HighPlayerName;
+            highScoreText.text = highScoreDescriptionText + DataManager.Instance.HighPlayerScore[0] + highScoreSeparatorText + DataManager.Instance.HighPlayerName[0];
         }
         else
         {
             Debug.Log("No data manager found to keep track of scores, data will not be saved!");
         }
         
+    }
+
+    // Update the high score text boxes on the pause screen
+    public void UpdatePauseScreenHighScores()
+    {
+        if (DataManager.Instance != null)
+        {
+            for (int i = 0; i < highScorePauseScreenTexts.Count; i++)
+            {
+                if (i < DataManager.Instance.HighPlayerScore.Count)
+                {
+                    // Handle edge cases for ordinals
+                    switch (i)
+                    {
+                        case (0):
+                            highScorePauseScreenTexts[i].text = "1st: " + DataManager.Instance.HighPlayerScore[i] + highScoreSeparatorText + DataManager.Instance.HighPlayerName[i];
+                            break;
+                        case (1):
+                            highScorePauseScreenTexts[i].text = "2nd: " + DataManager.Instance.HighPlayerScore[i] + highScoreSeparatorText + DataManager.Instance.HighPlayerName[i];
+                            break;
+                        case (2):
+                            highScorePauseScreenTexts[i].text = "3rd: " + DataManager.Instance.HighPlayerScore[i] + highScoreSeparatorText + DataManager.Instance.HighPlayerName[i];
+                            break;
+                        default:
+                            highScorePauseScreenTexts[i].text = (i + 1) + "th: " + DataManager.Instance.HighPlayerScore[i] + highScoreSeparatorText + DataManager.Instance.HighPlayerName[i];
+                            break;
+                    }
+                    highScorePauseScreenTexts[i].gameObject.SetActive(true);
+                } 
+                else
+                {
+                    highScorePauseScreenTexts[i].gameObject.SetActive(false);
+                }
+            }
+        }
     }
 
 
@@ -86,6 +123,7 @@ public class UIGame : MonoBehaviour
     {
         isGamePaused = true;
         Time.timeScale = 0f;
+        UpdatePauseScreenHighScores();
         SetPauseUIActive();
     }
 

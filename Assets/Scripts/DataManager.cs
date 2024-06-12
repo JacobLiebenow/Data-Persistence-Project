@@ -9,15 +9,15 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager Instance;
     public string CurrentPlayerName;
-    public string HighPlayerName;
-    public int HighPlayerScore;
+    public List<string> HighPlayerName;
+    public List<int> HighPlayerScore;
 
     // Data to save for later use between sessions
     [Serializable]
     class SaveData
     {
-        public string HighPlayerName;
-        public int HighPlayerScore;
+        public List<string> HighPlayerName;
+        public List<int> HighPlayerScore;
     }
 
     // Start is called before the first frame update
@@ -32,6 +32,9 @@ public class DataManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        HighPlayerName = new List<string>();
+        HighPlayerScore = new List<int>();
+
         LoadScore();
     }
 
@@ -41,8 +44,8 @@ public class DataManager : MonoBehaviour
         SaveData data = new SaveData();
         string json;
 
-        data.HighPlayerName = HighPlayerName;
-        data.HighPlayerScore = HighPlayerScore;
+        data.HighPlayerName = Instance.HighPlayerName;
+        data.HighPlayerScore = Instance.HighPlayerScore;
 
         json = JsonUtility.ToJson(data);
         File.WriteAllText(Application.persistentDataPath + "savefile.json", json);
@@ -58,13 +61,23 @@ public class DataManager : MonoBehaviour
             string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
-            Instance.HighPlayerName = data.HighPlayerName;
-            Instance.HighPlayerScore = data.HighPlayerScore;
+            if(data.HighPlayerName.Count > 0)
+            {
+                Instance.HighPlayerName = data.HighPlayerName;
+                Instance.HighPlayerScore = data.HighPlayerScore;
+            } 
+            else
+            {
+                Instance.HighPlayerName.Add("Unknown");
+                Instance.HighPlayerScore.Add(0);
+            }
+            
         }
         else
         {
-            Instance.HighPlayerName = "Unknown";
-            Instance.HighPlayerScore = 0;
+            Instance.HighPlayerName.Add("Unknown");
+            Instance.HighPlayerScore.Add(0);
+            Debug.Log("Data initialized");
         }
     }
 }

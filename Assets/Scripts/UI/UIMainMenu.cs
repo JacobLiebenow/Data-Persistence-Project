@@ -52,10 +52,13 @@ public class UIMainMenu : MonoBehaviour
     public void ResetScoreButtonPressed()
     {
         // To keep file calls to a minimum, only implement this method if the data values aren't at their default states to begin with
-        if (DataManager.Instance.HighPlayerScore != 0)
+        if (DataManager.Instance.HighPlayerScore[0] != 0)
         {
-            DataManager.Instance.HighPlayerName = defaultText;
-            DataManager.Instance.HighPlayerScore = 0;
+            DataManager.Instance.HighPlayerName.Clear();
+            DataManager.Instance.HighPlayerScore.Clear();
+
+            DataManager.Instance.HighPlayerName.Add(defaultText);
+            DataManager.Instance.HighPlayerScore.Add(0);
 
             DataManager.Instance.SaveScore();
             UpdateHighScoreText();
@@ -65,6 +68,6 @@ public class UIMainMenu : MonoBehaviour
     // Update the high score text on the main menu
     public void UpdateHighScoreText()
     {
-        highScoreText.text = highScoreDescriptionText + DataManager.Instance.HighPlayerScore + highScoreSeparatorText + DataManager.Instance.HighPlayerName;
+        highScoreText.text = highScoreDescriptionText + DataManager.Instance.HighPlayerScore[0] + highScoreSeparatorText + DataManager.Instance.HighPlayerName[0];
     }
 }

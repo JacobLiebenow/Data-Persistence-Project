@@ -20,6 +20,9 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
+    private int scoreIndex;
+    private int maxHighScores = 10;
+
     
     // Start is called before the first frame update
     void Start()
@@ -70,15 +73,8 @@ public class MainManager : MonoBehaviour
         ScoreText.text = $"Score : {m_Points}";
         
         // If the player manages to get a higher score than the previous high score, update the high score accordingly
-        if(DataManager.Instance != null && m_Points > DataManager.Instance.HighPlayerScore)
+        if(DataManager.Instance != null && m_Points > DataManager.Instance.HighPlayerScore[DataManager.Instance.HighPlayerScore.Count - 1])
         {
-            DataManager.Instance.HighPlayerScore = m_Points;
-
-            if(!DataManager.Instance.HighPlayerName.Equals(DataManager.Instance.CurrentPlayerName))
-            {
-                DataManager.Instance.HighPlayerName = DataManager.Instance.CurrentPlayerName;
-            }
-
             gameUI.UpdateHighScoreText();
         }
 
@@ -89,9 +85,40 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
 
-        if(DataManager.Instance != null)
+        if (DataManager.Instance != null && 
+            ((m_Points > DataManager.Instance.HighPlayerScore[DataManager.Instance.HighPlayerScore.Count - 1] && DataManager.Instance.HighPlayerScore.Count >= maxHighScores) 
+            || DataManager.Instance.HighPlayerScore.Count < maxHighScores))
         {
+            AddPlayerHighScore();
             DataManager.Instance.SaveScore();
+        }
+    }
+
+    private void AddPlayerHighScore()
+    {
+        bool isScoreInserted = false;
+
+        for (int i = 0; i < DataManager.Instance.HighPlayerScore.Count; i++)
+        {
+            if(m_Points > DataManager.Instance.HighPlayerScore[i])
+            {
+                DataManager.Instance.HighPlayerScore.Insert(i, m_Points);
+                DataManager.Instance.HighPlayerName.Insert(i, DataManager.Instance.CurrentPlayerName);
+                isScoreInserted = true;
+                break;
+            }
+        }
+
+        // If necessary, truncate the last value to keep the high scores pruned at 10 values at most
+        // Otherwise, add a new high score to the end of the high scores list
+        if(DataManager.Instance.HighPlayerScore.Count > maxHighScores)
+        {
+            DataManager.Instance.HighPlayerScore.RemoveAt(DataManager.Instance.HighPlayerScore.Count-1);
+            DataManager.Instance.HighPlayerName.RemoveAt(DataManager.Instance.HighPlayerName.Count-1);
+        } else if(!isScoreInserted)
+        {
+            DataManager.Instance.HighPlayerScore.Add(m_Points);
+            DataManager.Instance.HighPlayerName.Add(DataManager.Instance.CurrentPlayerName);
         }
     }
 }
